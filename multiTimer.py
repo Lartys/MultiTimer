@@ -41,7 +41,9 @@ class Tache ():
             self.s[self.x][self.y]+=1
         
         self.t[self.x][self.y].set("%02d:%02d:%02d" %(self.h[self.x][self.y],self.m[self.x][self.y],self.s[self.x][self.y]))
-       
+    
+    
+            
     def lancer(self):
 
         if encore:
@@ -79,7 +81,11 @@ class Hello_IHM(tk.Tk):
         self.ls_Pre=[]
         self.lc_Pre=[]
         self.tpre=[]
+        self.tproc=[]
+        self.tadmi=[]
         self.tache_Pre=[]
+        self.tache_Proc=[]
+        self.tache_Admi=[]
         self.frames=[]
         self.Bt_Envoi=[]
         self.ltext_Pre=[]
@@ -88,8 +94,26 @@ class Hello_IHM(tk.Tk):
         self.m_Pre=[]
         self.s_Pre=[]
         self.entrys_Pre=[]
+        self.entrys_Proc=[]
+        self.entrys_Admi=[]
         self.buttons_Pre=[]
         self.buttons_reset_Pre=[]
+        self.ltext_Proc=[]  
+        self.timer_Proc=[]  
+        self.h_Proc=[]  
+        self.m_Proc=[]  
+        self.s_Proc=[] 
+        self.buttons_Proc=[]  
+        self.lc_Proc=[] 
+        self.buttons_reset_Proc=[] 
+        self.ltext_Admi=[]  
+        self.timer_Admi=[]  
+        self.h_Admi=[]  
+        self.m_Admi=[]  
+        self.s_Admi=[]   
+        self.buttons_Admi=[]  
+        self.lc_Admi=[] 
+        self.buttons_reset_Admi=[] 
         self.lBtClick_Envoi=[]
         self.directory = Path(__file__).parent
         self.k=0
@@ -100,13 +124,16 @@ class Hello_IHM(tk.Tk):
         self.geometry('1000x500')
         
         self.title("IHM")
-        self.config(bg = "white") 
+        self.config(bg = "#87CEEB") 
         self.Ptopframe1 = tk.Frame(self)
         self.Ptopframe1.pack(side = "top", fill='both')
         self.Ptopframe2 = tk.Frame(self)
         self.Ptopframe2.pack(side = "top", fill='both')
         self.Pbottomframe = tk.Frame(self)
-        self.Pbottomframe.pack(side = "top", fill='both', expand = True)
+        self.Pbottomframe.pack(side = "bottom", fill='both')
+ 
+        self.Pbottomframe = tk.Frame(self)
+        self.Pbottomframe.pack(side = "bottom", fill='both')
         
         self.frame_canvas = tk.Frame(self.Pbottomframe)
         self.frame_canvas.grid(row= 1, column=0, pady=(5, 0), sticky='nwse')
@@ -116,7 +143,7 @@ class Hello_IHM(tk.Tk):
         self.frame_canvas.grid_propagate(False)
         
         # ajouter canvas (forme) dans frame
-        self.canvas = tk.Canvas(self.frame_canvas, bg="black")
+        self.canvas = tk.Canvas(self.frame_canvas, bg="purple")
         self.canvas.grid(row=0, column=0, sticky="nwse")
         
         # barre déroulante verticale et horizontale
@@ -128,7 +155,7 @@ class Hello_IHM(tk.Tk):
         self.hsb.grid(row=1, column=0, sticky='we')
         self.canvas.configure(xscrollcommand=self.hsb.set)
         
-        self.frame_buttons = tk.Frame(self.canvas, bg="black")
+        self.frame_buttons = tk.Frame(self.canvas, bg="blue")
         self.canvas.create_window((0, 0), window=self.frame_buttons, anchor='nw')
         
         try:
@@ -155,14 +182,15 @@ class Hello_IHM(tk.Tk):
                           'Quoi':[0]}
             self.csv(self.dict1)
                 
-        self.BTOngletRecap = tk.Button (self.Ptopframe1, text = "Recap.", command= lambda: self.command_lancer_arreter_recap())
+        self.BTOngletRecap = tk.Button (self.Ptopframe1, text = "Onglet Récapitulatif", bg = "black",fg="white", command= lambda: self.command_lancer_arreter_recap())
         self.BTOngletRecap.clicked = False
         self.BTOngletRecap.pack(side="right",fill='x', expand=1)
         
-        tk.Button (self.Ptopframe2, text = "Add Timer", command= lambda: self.visible(self.frame_buttons)).pack(expand=1,fill='x')
+        tk.Button (self.Ptopframe2, text = "Ajouter un chronomètre", bg = "purple",fg="white", command= lambda: self.visible(self.frame_buttons)).pack(expand=1,fill='x')
         
                     
-        self.bt_stop = tk.Button (self.Ptopframe1, text = "Stop Timers",state=tk.DISABLED, command = lambda: self.command_lancer_arreter(self.bt_stop))
+        self.bt_stop = tk.Button (self.Ptopframe1, text = "Stop Chronomètre", bg = "orange",fg="white",state=tk.DISABLED,
+                                  command = lambda: self.command_lancer_arreter(self.bt_stop))
         
         self.bt_stop.pack(side="left",fill='x', expand=1)
         
@@ -183,6 +211,10 @@ class Hello_IHM(tk.Tk):
             for y in range(self.col):
                 self.tache_Pre[x][y] = Tache(self.timer_Pre, self.ltext_Pre, x, y, self.h_Pre, self.m_Pre, self.s_Pre,self.entrys_Pre).arret_general()
                 self.tache_Pre[x][y]
+                self.tache_Proc[x][y]=Tache(self.timer_Proc, self.ltext_Proc, x, y, self.h_Proc, self.m_Proc, self.s_Proc,self.entrys_Proc).arret_general()
+                self.tache_Proc[x][y]
+                self.tache_Admi[x][y]=Tache(self.timer_Admi, self.ltext_Admi, x, y, self.h_Admi, self.m_Admi, self.s_Admi,self.entrys_Admi).arret_general()                
+                self.tache_Admi[x][y]
                 
     def csv(self,dic):
         with open(r'{}\test.csv'.format(self.directory), 'w', encoding="utf-8") as f :
@@ -220,12 +252,18 @@ class Hello_IHM(tk.Tk):
             self.lcarte.append(list())
             self.lk.append(list())
             self.tache_Pre.append(list())
+            self.tache_Proc.append(list())
+            self.tache_Admi.append(list())
             self.entryM.append(list())
             self.lBtClick_Envoi.append(list())
             self.tpre.append(list())
+            self.tproc.append(list())
+            self.tadmi.append(list())
             
             lappend(self.ltext_Pre, self.timer_Pre, self.h_Pre, self.m_Pre, self.s_Pre, self.entrys_Pre, self.buttons_Pre, self.lc_Pre, self.buttons_reset_Pre)
-
+            lappend(self.ltext_Proc, self.timer_Proc, self.h_Proc, self.m_Proc, self.s_Proc, self.entrys_Proc, self.buttons_Proc, self.lc_Proc, self.buttons_reset_Proc)
+            lappend(self.ltext_Admi, self.timer_Admi, self.h_Admi, self.m_Admi, self.s_Admi, self.entrys_Admi, self.buttons_Admi, self.lc_Admi, self.buttons_reset_Admi)
+        
         def lappendv(ltext,timerr,h,m,s,entrys,buttons,lc,buttons_reset):
             ltext[-1].append(tk.StringVar(self.frame_buttons,"00:00:00"))
             timerr[-1].append(0)
@@ -238,16 +276,22 @@ class Hello_IHM(tk.Tk):
             buttons_reset[-1].append(tk.Button(self.frame_buttons))
         
         self.tache_Pre[-1].append(0)
+        self.tache_Proc[-1].append(0)
+        self.tache_Admi[-1].append(0)
         self.lk[-1].append(self.k)
-        self.frames[-1].append(tk.Canvas(self.frame_buttons, bg="white"))
+        self.frames[-1].append(tk.Canvas(self.frame_buttons, bg="green"))
         self.Bt_Envoi[-1].append(tk.Button(self.frame_buttons))
-        self.lcarte[-1].append(tk.StringVar(self.frame_buttons,"NameOfStudent"))
+        self.lcarte[-1].append(tk.StringVar(self.frame_buttons,"Nom_carte"))
         self.entry[-1].append(tk.Entry(self.frame_buttons))
         self.entryM[-1].append(tk.Entry(self.frame_buttons))
         self.lBtClick_Envoi[-1].append(False)
         self.tpre[-1].append(0)
+        self.tproc[-1].append(0)
+        self.tadmi[-1].append(0)
 
         lappendv(self.ltext_Pre, self.timer_Pre, self.h_Pre, self.m_Pre, self.s_Pre, self.entrys_Pre, self.buttons_Pre, self.lc_Pre, self.buttons_reset_Pre)
+        lappendv(self.ltext_Proc, self.timer_Proc, self.h_Proc, self.m_Proc, self.s_Proc, self.entrys_Proc, self.buttons_Proc, self.lc_Proc, self.buttons_reset_Proc)
+        lappendv(self.ltext_Admi, self.timer_Admi, self.h_Admi, self.m_Admi, self.s_Admi, self.entrys_Admi, self.buttons_Admi, self.lc_Admi, self.buttons_reset_Admi)
 
         l = self.lp-1
         self.lll.append(l)
@@ -255,26 +299,34 @@ class Hello_IHM(tk.Tk):
         self.llc.append(c)
         self.k+=1
         
-        self.frames[l][c] = tk.Canvas(fm, bg="white")
+        self.frames[l][c] = tk.Canvas(fm, bg="green")
         
-        self.topframe = tk.Frame(self.frames[l][c], bg="white")
+        self.topframe = tk.Frame(self.frames[l][c], bg="green")
         self.topframe.pack(side = "top")
-        self.leftframe1 = tk.Frame(self.frames[l][c], bg="white")
+        self.leftframe1 = tk.Frame(self.frames[l][c], bg="green")
         self.leftframe1.pack(side = "top")
-        self.leftframe2 = tk.Frame(self.frames[l][c], bg="white")
+        self.leftframe2 = tk.Frame(self.frames[l][c], bg="green")
         self.leftframe2.pack(side = "top")
-        self.leftframe3 = tk.Frame(self.frames[l][c], bg="white")
+        self.leftframe3 = tk.Frame(self.frames[l][c], bg="green")
         self.leftframe3.pack(side = "top")
-        self.bottomframe = tk.Frame(self.frames[l][c], bg="white")
+        self.bottomframe = tk.Frame(self.frames[l][c], bg="green")
         self.bottomframe.pack(side = "bottom")
         
-        tk.Label(self.topframe, text='Timer'+ str(self.k), bg = "white").pack(side="top")
+        tk.Label(self.topframe, text='Chronomètre'+ str(self.k), bg = "green").pack(side="top")
         self.entry[l][c] = tk.Entry(self.topframe, textvariable = self.lcarte[l][c])
         self.entry[l][c].pack(side="bottom")
         
-        tk.Label(self.leftframe1,text="Tim : ", bg = "white").pack(side="left") 
+        tk.Label(self.leftframe1,text="Prep. : ", bg = "green").pack(side="left") 
 
         self.creation_widgets(self.leftframe1, l, c, self.ltext_Pre, self.timer_Pre, self.h_Pre, self.m_Pre, self.s_Pre, self.entrys_Pre, self.buttons_Pre, self.lc_Pre, self.buttons_reset_Pre)
+        
+        tk.Label(self.leftframe2,text="Proc. : ", bg = "green").pack(side="left")
+        self.creation_widgets(self.leftframe2, l, c, self.ltext_Proc, self.timer_Proc, self.h_Proc, self.m_Proc, self.s_Proc, self.entrys_Proc, self.buttons_Proc, self.lc_Proc, self.buttons_reset_Proc)
+
+        tk.Label(self.leftframe3,text="Adm : ", bg = "green").pack(side="left")
+        self.creation_widgets(self.leftframe3, l, c, self.ltext_Admi, self.timer_Admi, self.h_Admi, self.m_Admi, self.s_Admi, self.entrys_Admi, self.buttons_Admi, self.lc_Admi, self.buttons_reset_Admi)
+
+
 
         def archive():
 
@@ -301,9 +353,9 @@ class Hello_IHM(tk.Tk):
                 self.csv(self.dict1)
                 return self.lBtClick_Envoi[l][c]==True
         
-        self.entryM[l][c] = tk.Entry(self.bottomframe, textvariable = tk.StringVar(self.bottomframe,"Comment"))
+        self.entryM[l][c] = tk.Entry(self.bottomframe, textvariable = tk.StringVar(self.bottomframe,"Mécano"))
         self.lBtClick_Envoi[l][c]
-        self.Bt_Envoi[l][c]=tk.Button(self.bottomframe, text='Commit time', command= lambda:[archive(),self.frames[l][c].destroy()])
+        self.Bt_Envoi[l][c]=tk.Button(self.bottomframe, text='Commit time', command= lambda:[archive(),self.Bt_Envoi[l][c].config(state=tk.DISABLED)])
         self.Bt_Envoi[l][c].pack(side="bottom")
         
         self.entryM[l][c].pack(side="bottom")
@@ -332,6 +384,10 @@ class Hello_IHM(tk.Tk):
                         
                         self.tache_Pre[x][y] = Tache(self.timer_Pre, self.ltext_Pre, x, y, self.h_Pre, self.m_Pre, self.s_Pre,self.entrys_Pre).arret_general()
                         self.tache_Pre[x][y]
+                        self.tache_Proc[x][y]=Tache(self.timer_Proc, self.ltext_Proc, x, y, self.h_Proc, self.m_Proc, self.s_Proc,self.entrys_Proc).arret_general()
+                        self.tache_Proc[x][y]
+                        self.tache_Admi[x][y]=Tache(self.timer_Admi, self.ltext_Admi, x, y, self.h_Admi, self.m_Admi, self.s_Admi,self.entrys_Admi).arret_general()
+                        self.tache_Admi[x][y]
                         
                 if self.lll[-1]==0:
                     ligne=1
@@ -341,8 +397,15 @@ class Hello_IHM(tk.Tk):
                 for r in range(0,ligne,1):
                     for co in range(0,len(self.lc_Pre[r]),1):
                         self.buttons_Pre[r][co].config(text=">")
+                        self.buttons_Proc[r][co].config(text=">")
+                        self.buttons_Admi[r][co].config(text=">")
                         if self.lc_Pre[r][co] % 2 != 0:
-                            self.lc_Pre[r][co]+=1                               
+                            self.lc_Pre[r][co]+=1   
+                        if self.lc_Proc[r][co] % 2 != 0:
+                            self.lc_Proc[r][co]+=1
+                        if self.lc_Admi[r][co] % 2 != 0:
+                            self.lc_Admi[r][co]+=1
+                            
                 return True
 
         elif id(buttons) == id(self.buttons_Pre):
@@ -356,6 +419,35 @@ class Hello_IHM(tk.Tk):
                 else:
                     self.tache_Pre[x][y]=Tache(timer, ltext, x, y, h, m, s,self.entrys_Pre).arret()
                     self.tache_Pre[x][y]
+                    buttons[x][y].config(text=">")
+                return True
+ 
+        
+        elif id(buttons) == id(self.buttons_Proc):    
+            if not buttons[x][y].clicked:
+                self.lc_Proc[x][y]+=1
+                if self.lc_Proc[x][y] % 2 != 0:
+                    self.bt_stop.config(state=tk.NORMAL)
+                    self.tache_Proc[x][y]=Tache(timer, ltext, x, y, h, m, s,self.entrys_Proc).demarrer()
+                    self.tache_Proc[x][y]
+                    buttons[x][y].config(text="||")
+                else:
+                    self.tache_Proc[x][y]=Tache(timer, ltext, x, y, h, m, s,self.entrys_Proc).arret()
+                    self.tache_Proc[x][y]
+                    buttons[x][y].config(text=">")
+                return True
+                
+        elif id(buttons) == id(self.buttons_Admi):    
+            if not buttons[x][y].clicked:
+                self.lc_Admi[x][y]+=1
+                if self.lc_Admi[x][y] % 2 != 0:
+                    self.bt_stop.config(state=tk.NORMAL)
+                    self.tache_Admi[x][y]=Tache(timer, ltext, x, y, h, m, s,self.entrys_Admi).demarrer()
+                    self.tache_Admi[x][y]
+                    buttons[x][y].config(text="||")
+                else:
+                    self.tache_Admi[x][y]=Tache(timer, ltext, x, y, h, m, s,self.entrys_Admi).arret()
+                    self.tache_Admi[x][y]
                     buttons[x][y].config(text=">")
                 return True
 
@@ -423,7 +515,7 @@ class Hello_IHM(tk.Tk):
         self.lb1=tk.Label(self.root2,text=str1)
         self.lb1.pack(side = "top", fill='both')
 
-        self.topframe2 = tk.Frame(self.root2, bg='white')
+        self.topframe2 = tk.Frame(self.root2, bg='red')
         self.topframe2.pack(pady=20)
         treeYScroll = ttk.Scrollbar(self.topframe2)
         treeYScroll.pack(side='right', fill='y')
